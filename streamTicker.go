@@ -106,26 +106,26 @@ func (s *StreamTickerBranch) Close() {
 	s.ask.mux.Unlock()
 }
 
-func (s *StreamTickerBranch) GetBid() (price, qty string, ok bool) {
+func (s *StreamTickerBranch) GetBid() (price, qty string, st time.Time, ok bool) {
 	s.bid.mux.RLock()
 	defer s.bid.mux.RUnlock()
 	price = s.bid.price
 	qty = s.bid.qty
 	if price == NullPrice || price == "" {
-		return price, qty, false
+		return price, qty, time.Time{}, false
 	}
-	return price, qty, true
+	return price, qty, time.Now(), true
 }
 
-func (s *StreamTickerBranch) GetAsk() (price, qty string, ok bool) {
+func (s *StreamTickerBranch) GetAsk() (price, qty string, st time.Time, ok bool) {
 	s.ask.mux.RLock()
 	defer s.ask.mux.RUnlock()
 	price = s.ask.price
 	qty = s.ask.qty
 	if price == NullPrice || price == "" {
-		return price, qty, false
+		return price, qty, time.Time{}, false
 	}
-	return price, qty, true
+	return price, qty, time.Now(), true
 }
 
 func (s *StreamTickerBranch) updateBidData(price, qty string) {
